@@ -12,6 +12,7 @@ locals {
       subnet_id            = module.vpc.public_subnets[0]
       root_ebs_size        = 8
       root_ebs_volume_type = "gp3"
+      aws_eip              = true
     }
     "ec2_instance_internal" = {
       ami_id                  = "ami-0dfdc165e7af15242" # al2023-ami-2023.4.20240429.0-kernel-6.1-x86_64
@@ -52,4 +53,11 @@ resource "aws_instance" "this" {
     tags        = merge({ Name : each.key }, local.default_tags)
   }
   tags = merge({ Name : each.key })
+}
+
+resource "aws_eip" "this" {
+  for_each = { for k, v in local.ec2_instances : k => v if lookup(v, "aws_eip", false) }
+
+  instance = aws_instance.this[each.key].id
+  tags     = { Name : each.key }
 }
