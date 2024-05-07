@@ -11,14 +11,14 @@ locals {
         }
       }
     }
-    allow_tls_bw_instances = {
-      description = "Allow TLS inbound traffic bw instances"
+    allow_all_bw_instances = {
+      description = "Allow All inbound traffic bw instances"
       ingress = {
         self_tls = {
-          from_port   = 443
-          to_port     = 443
-          ip_protocol = "tcp"
-          self        = true
+          from_port = 0
+          to_port   = 0
+          protocol  = "-1"
+          self      = true
         }
       }
     }
